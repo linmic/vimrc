@@ -7,6 +7,7 @@ lang C " set msg lang to English
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags " html complete
 autocmd BufRead,BufNewFile *.mako set filetype=mako " mako filetype
 
+"  ensure BufWinEnter is only done on initial buffer read
 au BufReadPost * let b:reloadcheck = 1
 au BufWinEnter * if exists('b:reloadcheck') | unlet b:reloadcheck | if &mod != 0 && &fenc != "" | exe 'e! ++enc=' . &fenc | endif | endif
 
@@ -25,8 +26,7 @@ elseif has("win32")
 	behave mswin
 endif
 
-" display line number by default
-set number
+set number " display line number by default
 
 " shortcut to toggle line number and column space
 nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
