@@ -1,4 +1,13 @@
-
+" Description:	html5 (and html4) indenter
+" Changed By:	Brian Gershon <brian.five@gmail.com>
+" Last Change:	30 Jan 2011
+" 
+"   1. Started with vim72 html indent file authored by Johannes Zellner (below)
+"   2. Added html5 list as described here:
+"      http://stackoverflow.com/questions/3232518/how-to-update-vim-to-color-code-new-html-elements
+"   3. Added this to a fork of https://github.com/othree/html5.vim
+"      which already provides nice html5 syntax highlighting.
+"
 " Description:	html indenter
 " Author:	Johannes Zellner <johannes@zellner.org>
 " Last Change:	Mo, 05 Jun 2006 22:32:41 CEST
@@ -8,22 +17,14 @@
 "		g:html_indent_strict_table -- inhibit 'O -' elements
 
 " Only load this indent file when no other was loaded.
-"if exists("b:did_indent")
-    "finish
-"endif
-"let b:did_indent = 1
-
-if exists("g:js_indent") 
-	so g:js_indent
-else 
-	ru! indent/javascript.vim
+if exists("b:did_indent")
+    finish
 endif
-
-echo "Sourcing html indent"
+let b:did_indent = 1
 
 
 " [-- local settings (must come before aborting the script) --]
-setlocal indentexpr=HtmlIndentGetter(v:lnum)
+setlocal indentexpr=HtmlIndentGet(v:lnum)
 setlocal indentkeys=o,O,*<Return>,<>>,{,}
 
 
@@ -105,6 +106,36 @@ call <SID>HtmlIndentPush('u')
 call <SID>HtmlIndentPush('ul')
 call <SID>HtmlIndentPush('var')
 
+" New HTML 5 elements
+call <SID>HtmlIndentPush('table')
+call <SID>HtmlIndentPush('article')
+call <SID>HtmlIndentPush('aside')
+call <SID>HtmlIndentPush('audio')
+call <SID>HtmlIndentPush('canvas')
+call <SID>HtmlIndentPush('command')
+call <SID>HtmlIndentPush('datalist')
+call <SID>HtmlIndentPush('details')
+call <SID>HtmlIndentPush('embed')
+call <SID>HtmlIndentPush('figcaption')
+call <SID>HtmlIndentPush('figure')
+call <SID>HtmlIndentPush('footer')
+call <SID>HtmlIndentPush('header')
+call <SID>HtmlIndentPush('hgroup')
+call <SID>HtmlIndentPush('keygen')
+call <SID>HtmlIndentPush('mark')
+call <SID>HtmlIndentPush('meter')
+call <SID>HtmlIndentPush('nav')
+call <SID>HtmlIndentPush('output')
+call <SID>HtmlIndentPush('progress')
+call <SID>HtmlIndentPush('rp')
+call <SID>HtmlIndentPush('rt')
+call <SID>HtmlIndentPush('ruby')
+call <SID>HtmlIndentPush('section')
+call <SID>HtmlIndentPush('source')
+call <SID>HtmlIndentPush('summary')
+call <SID>HtmlIndentPush('time')
+call <SID>HtmlIndentPush('video')
+call <SID>HtmlIndentPush('bdi')
 
 " [-- <ELEMENT ? O O ...> --]
 if !exists('g:html_indent_strict')
@@ -177,9 +208,7 @@ fun! <SID>HtmlIndentSum(lnum, style)
     return 0
 endfun
 
-fun! HtmlIndentGetter(lnum)
-	
-	echo "Grabbing html indent for line: " . a:lnum
+fun! HtmlIndentGet(lnum)
     " Find a non-empty line above the current line.
     let lnum = prevnonblank(a:lnum - 1)
 
@@ -203,7 +232,7 @@ fun! HtmlIndentGetter(lnum)
     endif
 
     " [-- special handling for <javascript>: use cindent --]
-    let js = '<script.*type\s*=.*javascript'
+    let js = '<script.*type\s*=\s*.*java'
 
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
     " by Tye Zdrojewski <zdro@yahoo.com>, 05 Jun 2006
@@ -216,12 +245,11 @@ fun! HtmlIndentGetter(lnum)
     if   0 < searchpair(js, '', '</script>', 'nWb')
     \ && 0 < searchpair(js, '', '</script>', 'nW')
 	" we're inside javascript
-	
-	if getline(lnum) !~ js && getline(a:lnum) !~ '</script>'
+	if getline(lnum) !~ js && getline(a:lnum) != '</script>'
 	    if restore_ic == 0
 	      setlocal noic
-	    endif	
-		return GetJsIndent(a:lnum)
+	    endif
+	    return cindent(a:lnum)
 	endif
     endif
 
