@@ -50,8 +50,8 @@ set number " show line number
 " shortcut to toggle line number and column space
 nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
 
-set cursorline " highlight current row where cursor located
-set cursorcolumn " highlight current column where cursor located
+" set cursorline " highlight current row where cursor located
+" set cursorcolumn " highlight current column where cursor located
 
 set ignorecase
 set smartcase
@@ -173,5 +173,4 @@ let g:SrcExpl_RefreshTime = 1
 "tagsをsrcexpl起動時に自動で作成（更新）するかどうか
 let g:SrcExpl_UpdateTags = 1
 
-" leader for the javascript beautifier
 let mapleader = ","
